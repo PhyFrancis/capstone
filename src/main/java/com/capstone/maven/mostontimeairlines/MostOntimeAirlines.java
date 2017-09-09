@@ -1,4 +1,4 @@
-package com.capstone.maven.mostontimeairlines.copy;
+package com.capstone.maven.mostontimeairlines;
 
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;

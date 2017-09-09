@@ -1,4 +1,4 @@
-package com.capstone.maven.mostontimeairlines.copy;
+package com.capstone.maven.mostontimeairlines;
 
 import java.io.DataInput;
 import java.io.DataOutput;

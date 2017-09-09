@@ -1,4 +1,4 @@
-package com.capstone.maven.mostontimeairlines.copy;
+package com.capstone.maven.mostontimeairlines;
 
 import java.io.IOException;
 import java.util.Collections;
