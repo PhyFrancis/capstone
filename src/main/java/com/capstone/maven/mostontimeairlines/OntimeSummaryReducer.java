@@ -29,7 +29,7 @@ public class OntimeSummaryReducer extends
 				summary.incrementNotOntime();
 			}
 		}
-		// summaryMap.put(key.toString(), summary);
+		summaryMap.put(key.toString(), summary);
 	}
 	
 	@Override

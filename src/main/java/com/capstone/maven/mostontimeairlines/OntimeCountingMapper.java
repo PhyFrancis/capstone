@@ -22,7 +22,10 @@ public class OntimeCountingMapper extends
 		String[] tokens = value.toString().split(AirlineOntimeDataField.getFieldDelimiter());
 
 		String airline = tokens[AIRLINE];
-		Double arrDelay = Double.valueOf(tokens[ARR_DELAY]);
+		Double arrDelay  = 0.0;
+		if (!tokens[ARR_DELAY].isEmpty()) {
+			arrDelay = Double.valueOf(tokens[ARR_DELAY]);
+		}
 
 		if (arrDelay <= 0) {
 			context.write(new Text(airline), IS_ONTIME);

@@ -6,7 +6,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.conf.Configuration;
 
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.BooleanWritable;
 import org.apache.hadoop.io.Text;
 
 /**
@@ -15,7 +15,7 @@ import org.apache.hadoop.io.Text;
 public class MostOntimeAirlines {
 	public static void main(String[] args) throws Exception {
 		Configuration conf = new Configuration();
-		conf.set("topNCount", "10"); // Only get top 10 popular airports
+		conf.set("topNCount", "10"); // Only get top 10 ontime arrival airlines. 
 		Job job = Job.getInstance(conf, "most popular airports");
 		job.setJarByClass(MostOntimeAirlines.class);
 
@@ -24,11 +24,12 @@ public class MostOntimeAirlines {
 
 		// Map & Reduce
 		job.setMapperClass(OntimeCountingMapper.class);
+		job.setMapOutputValueClass(BooleanWritable.class);
 		job.setReducerClass(OntimeSummaryReducer.class);
 
 		// Output
 		job.setOutputKeyClass(Text.class);
-		job.setOutputValueClass(IntWritable.class);
+		job.setOutputValueClass(OntimeSummaryWritable.class);
 		FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
 		System.exit(job.waitForCompletion(true) ? 0 : 1);
