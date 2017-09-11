@@ -5,15 +5,15 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.Writable;
+import org.apache.hadoop.io.WritableComparable;
 
-public class OntimeSummaryWritable implements Writable {
+public class OntimeSummaryWritable implements WritableComparable<OntimeSummaryWritable> {
 	private IntWritable ontime_count;
 	private IntWritable total_count;
 
 	public OntimeSummaryWritable() {
-		ontime_count.set(0);
-		total_count.set(0);
+		ontime_count = new IntWritable(0);
+		total_count = new IntWritable(0);
 	}
 
 	public void incrementOntime() {
@@ -37,5 +37,18 @@ public class OntimeSummaryWritable implements Writable {
 	public void write(DataOutput out) throws IOException {
 		ontime_count.write(out);
 		total_count.write(out);
+	}
+
+	@Override
+	public String toString() {
+		return String.format("ontime rate: %d / %d = %f ", ontime_count.get(),
+				total_count.get(),
+				(double) ontime_count.get() / total_count.get());
+	}
+
+	public int compareTo(OntimeSummaryWritable o) {
+		Double ontime_rate = (double)ontime_count.get() / total_count.get();
+		Double ontime_rate_that = (double)o.ontime_count.get() / o.total_count.get();
+		return ontime_rate_that.compareTo(ontime_rate);
 	}
 }
