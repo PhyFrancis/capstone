@@ -11,7 +11,7 @@ import com.capstone.maven.common.AirlineOntimeDataField;
 
 public class OntimeCountingMapper extends
 		Mapper<LongWritable, Text, Text, BooleanWritable> {
-	private static final int AIRLINE = AirlineOntimeDataField.AIRLINE_ID.getFieldIndexInCleanedFile();
+	private static final int UNIQUE_CARRIER = AirlineOntimeDataField.UNIQUE_CARRIER.getFieldIndexInCleanedFile();
 	private static final int ARR_DELAY = AirlineOntimeDataField.ARR_DELAY.getFieldIndexInCleanedFile();
 	
 	private final static BooleanWritable IS_ONTIME = new BooleanWritable(true);
@@ -21,16 +21,16 @@ public class OntimeCountingMapper extends
 			throws IOException, InterruptedException {
 		String[] tokens = value.toString().split(AirlineOntimeDataField.getFieldDelimiter());
 
-		String airline = tokens[AIRLINE];
+		String uniqueCarrier = tokens[UNIQUE_CARRIER];
 		Double arrDelay  = 0.0;
 		if (!tokens[ARR_DELAY].isEmpty()) {
 			arrDelay = Double.valueOf(tokens[ARR_DELAY]);
 		}
 
 		if (arrDelay <= 0) {
-			context.write(new Text(airline), IS_ONTIME);
+			context.write(new Text(uniqueCarrier), IS_ONTIME);
 		} else {
-			context.write(new Text(airline), NOT_ONTIME);
+			context.write(new Text(uniqueCarrier), NOT_ONTIME);
 		}
 	}
 }

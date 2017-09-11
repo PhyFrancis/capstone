@@ -3,6 +3,7 @@ package com.capstone.maven.mostontimeairlines;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 import org.apache.hadoop.conf.Configuration;
 
 import org.apache.hadoop.fs.Path;
@@ -16,21 +17,20 @@ public class MostOntimeAirlines {
 	public static void main(String[] args) throws Exception {
 		Configuration conf = new Configuration();
 		conf.set("topNCount", "10"); // Only get top 10 ontime arrival airlines. 
+
 		Job job = Job.getInstance(conf, "most popular airports");
 		job.setJarByClass(MostOntimeAirlines.class);
-
 		// Input
 		FileInputFormat.setInputPaths(job, new Path(args[0]));
-
 		// Map & Reduce
 		job.setMapperClass(OntimeCountingMapper.class);
 		job.setMapOutputValueClass(BooleanWritable.class);
 		job.setReducerClass(OntimeSummaryReducer.class);
-
 		// Output
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(OntimeSummaryWritable.class);
-		FileOutputFormat.setOutputPath(job, new Path(args[1]));
+		job.setOutputFormatClass(SequenceFileOutputFormat.class);
+		FileOutputFormat.setOutputPath(job, new Path("/most_ontime_airlines_tmp"));
 
 		System.exit(job.waitForCompletion(true) ? 0 : 1);
 	}
