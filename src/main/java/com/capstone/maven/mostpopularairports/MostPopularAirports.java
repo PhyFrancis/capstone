@@ -25,6 +25,8 @@ public class MostPopularAirports {
 		FileInputFormat.setInputPaths(summarizeJob, new Path(args[0]));
 		// Map & Reduce
 		summarizeJob.setMapperClass(AirportCountingMapper.class);
+		summarizeJob.setMapOutputKeyClass(Text.class);
+		summarizeJob.setMapOutputValueClass(IntWritable.class);
 		summarizeJob.setReducerClass(IntSumReducer.class);
 		// Output
 		summarizeJob.setOutputKeyClass(IntWritable.class);
