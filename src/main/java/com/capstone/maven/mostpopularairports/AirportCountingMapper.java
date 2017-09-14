@@ -16,6 +16,7 @@ public class AirportCountingMapper extends
 	
 	private final static IntWritable ONE = new IntWritable(1);
 	
+	@Override
 	public void map(LongWritable key, Text value, Context context)
 			throws IOException, InterruptedException {
 		String[] tokens = value.toString().split(AirlineOntimeDataField.getFieldDelimiter());
