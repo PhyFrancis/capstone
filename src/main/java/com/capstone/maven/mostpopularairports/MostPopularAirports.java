@@ -8,7 +8,7 @@ import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 import org.apache.hadoop.conf.Configuration;
 
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 
 /**
@@ -16,8 +16,8 @@ import org.apache.hadoop.io.Text;
  */
 public class MostPopularAirports {
 	public static void main(String[] args) throws Exception {
-		Configuration conf = new Configuration();
-		Job summarizeJob = Job.getInstance(conf, "most popular airports");
+		Configuration jobConf = new Configuration();
+		Job summarizeJob = Job.getInstance(jobConf, "most popular airports");
 		summarizeJob.setJarByClass(MostPopularAirports.class);
 		final String tmp_folder = "/most_popular_airports_tmp";
 
@@ -26,10 +26,10 @@ public class MostPopularAirports {
 		// Map & Reduce
 		summarizeJob.setMapperClass(AirportCountingMapper.class);
 		summarizeJob.setMapOutputKeyClass(Text.class);
-		summarizeJob.setMapOutputValueClass(IntWritable.class);
-		summarizeJob.setReducerClass(IntSumReducer.class);
+		summarizeJob.setMapOutputValueClass(LongWritable.class);
+		summarizeJob.setReducerClass(LongSumReducer.class);
 		// Output
-		summarizeJob.setOutputKeyClass(IntWritable.class);
+		summarizeJob.setOutputKeyClass(LongWritable.class);
 		summarizeJob.setOutputValueClass(Text.class);
 		summarizeJob.setOutputFormatClass(SequenceFileOutputFormat.class);
 		FileOutputFormat.setOutputPath(summarizeJob, new Path(tmp_folder));
@@ -37,18 +37,16 @@ public class MostPopularAirports {
 			System.exit(1);
 		}
 
-		Job sortJob = Job.getInstance(conf, "sort popularity");
+		Job sortJob = Job.getInstance(jobConf, "sort popularity");
 		sortJob.setJarByClass(MostPopularAirports.class);
 		sortJob.setInputFormatClass(SequenceFileInputFormat.class);
 		// Input
 		SequenceFileInputFormat.setInputPaths(sortJob, new Path(tmp_folder));
 		// Map & Reduce. Note that reducer is not needed because sorting is done
 		// in the mapping phase.
-		sortJob.setMapOutputKeyClass(IntWritable.class);
-		sortJob.setMapOutputValueClass(Text.class);
-		sortJob.setSortComparatorClass(DescendingIntComparator.class);
 		sortJob.setNumReduceTasks(1);
-		sortJob.setOutputKeyClass(IntWritable.class);
+		sortJob.setSortComparatorClass(LongWritable.DecreasingComparator.class);
+		sortJob.setOutputKeyClass(LongWritable.class);
 		sortJob.setOutputValueClass(Text.class);
 		FileOutputFormat.setOutputPath(sortJob, new Path(
 				"/most_popular_airports"));

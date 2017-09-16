@@ -2,7 +2,6 @@ package com.capstone.maven.mostpopularairports;
 
 import java.io.IOException;
 
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -10,11 +9,11 @@ import org.apache.hadoop.mapreduce.Mapper;
 import com.capstone.maven.common.AirlineOntimeDataField;
 
 public class AirportCountingMapper extends
-		Mapper<LongWritable, Text, Text, IntWritable> {
+		Mapper<LongWritable, Text, Text, LongWritable> {
 	private static final int ORIGIN_FIELD = AirlineOntimeDataField.ORIGIN.getFieldIndexInCleanedFile();
 	private static final int DEST_FIELD = AirlineOntimeDataField.DEST.getFieldIndexInCleanedFile();
 	
-	private final static IntWritable ONE = new IntWritable(1);
+	private final static LongWritable ONE = new LongWritable(1);
 	
 	@Override
 	public void map(LongWritable key, Text value, Context context)
