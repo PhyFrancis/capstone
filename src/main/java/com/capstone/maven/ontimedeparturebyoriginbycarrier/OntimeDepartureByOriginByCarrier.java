@@ -23,12 +23,11 @@ public class OntimeDepartureByOriginByCarrier {
 		summarizeJob.setMapperClass(OntimeCountingMapper.class);
 		summarizeJob.setMapOutputKeyClass(OriginCarrierGroupKey.class);
 		summarizeJob.setMapOutputValueClass(OntimeSummaryWritable.class);
-		// summarizeJob.setCombinerClass(OntimeSummaryReducer.class);
+		summarizeJob.setCombinerClass(OntimeSummaryReducer.class);
 		summarizeJob.setReducerClass(OntimeSummaryReducer.class);
 		// Output
 		summarizeJob.setOutputKeyClass(OriginCarrierGroupKey.class);
 		summarizeJob.setOutputValueClass(OntimeSummaryWritable.class);
-		summarizeJob.setOutputFormatClass(FileOutputFormat.class);
 		FileOutputFormat.setOutputPath(summarizeJob, new Path(
 				"/departure_ontime_by_origin_by_carrier_tmp"));
 		if (!summarizeJob.waitForCompletion(true)) {
