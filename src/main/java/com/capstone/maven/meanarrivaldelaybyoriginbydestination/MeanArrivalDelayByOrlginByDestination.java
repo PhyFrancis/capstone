@@ -29,7 +29,7 @@ public class MeanArrivalDelayByOrlginByDestination {
 		summarizeJob.setOutputKeyClass(OriginDestinationGroupKey.class);
 		summarizeJob.setOutputValueClass(ArrivalDelaySummaryWritable.class);
 		FileOutputFormat.setOutputPath(summarizeJob, new Path(
-				"/mean_ontime_by_origin_by_destination"));
+				"/mean_arrival_delay_by_origin_by_destination"));
 		if (!summarizeJob.waitForCompletion(true)) {
 			System.exit(1);
 		}
