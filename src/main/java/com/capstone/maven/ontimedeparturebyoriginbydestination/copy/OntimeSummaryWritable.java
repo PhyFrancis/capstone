@@ -1,4 +1,4 @@
-package com.capstone.maven.ontimedeparturebyoriginbycarrier;
+package com.capstone.maven.ontimedeparturebyoriginbydestination.copy;
 
 import java.io.DataInput;
 import java.io.DataOutput;
