@@ -1,4 +1,4 @@
-package com.capstone.maven.ontimedeparturebyoriginbydestination.copy;
+package com.capstone.maven.meanarrivaldelaybyoriginbydestination;
 
 import java.io.DataInput;
 import java.io.DataOutput;

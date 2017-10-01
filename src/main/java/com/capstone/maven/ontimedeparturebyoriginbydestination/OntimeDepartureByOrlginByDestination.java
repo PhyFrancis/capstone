@@ -1,4 +1,4 @@
-package com.capstone.maven.ontimedeparturebyoriginbydestination.copy;
+package com.capstone.maven.ontimedeparturebyoriginbydestination;
 
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
@@ -8,8 +8,8 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 
 /**
- * For question 1 in Group 2. For each airport, list the top 10 airlines by
- * on-time departure performance.
+ * For question 2 in Group 2. For each airport, list the top 10 destination
+ * airports by on-time departure performance.
  */
 public class OntimeDepartureByOrlginByDestination {
 	public static void main(String[] args) throws Exception {
