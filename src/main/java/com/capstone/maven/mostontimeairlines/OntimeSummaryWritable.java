@@ -21,7 +21,7 @@ public class OntimeSummaryWritable implements
 		count = new IntWritable(0);
 		totalDelay = new DoubleWritable(0.0);
 	}
-	
+
 	public OntimeSummaryWritable(double delay) {
 		count = new IntWritable(1);
 		totalDelay = new DoubleWritable(delay);
@@ -36,16 +36,16 @@ public class OntimeSummaryWritable implements
 		count.write(out);
 		totalDelay.write(out);
 	}
-	
+
 	public void combine(OntimeSummaryWritable o) {
 		this.count.set(this.count.get() + o.count.get());
 		this.totalDelay.set(this.totalDelay.get() + o.totalDelay.get());
 	}
-	
+
 	@Override
 	public String toString() {
-		return String.format("Average Delay: %.6f / %d = %.6f", totalDelay.get(),
-				count.get(), getAverageDelay());
+		return String.format("%.6f (%.6f/%d)", this.getAverageDelay(),
+				totalDelay.get(), count.get());
 	}
 
 	public int compareTo(OntimeSummaryWritable o) {

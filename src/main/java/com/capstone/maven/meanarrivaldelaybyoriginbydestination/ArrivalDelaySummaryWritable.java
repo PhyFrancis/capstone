@@ -17,12 +17,12 @@ public class ArrivalDelaySummaryWritable implements
 		total_delay = new DoubleWritable(0);
 		total_count = new IntWritable(0);
 	}
-	
-	public void addOneData(double delay) {
-		total_delay.set(total_delay.get() + delay);
-		total_count.set(total_count.get() + 1);
-	}
 
+	public ArrivalDelaySummaryWritable(double delay) {
+		total_delay = new DoubleWritable(delay);
+		total_count = new IntWritable(1);
+	}
+	
 	public Double getMeanArrivalDelay() {
 		return this.total_delay.get() / this.total_count.get();
 	}

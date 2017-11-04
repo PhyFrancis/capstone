@@ -17,6 +17,8 @@ public class OntimeCountingMapper
 			.getFieldIndexInCleanedFile();
 	private static final int DEP_DELAY = AirlineOntimeDataField.DEP_DELAY
 			.getFieldIndexInCleanedFile();
+	private static final int CANCELLED = AirlineOntimeDataField.CANCELLED
+			.getFieldIndexInCleanedFile();
 
 	@Override
 	public void map(LongWritable key, Text value, Context context)
@@ -24,17 +26,12 @@ public class OntimeCountingMapper
 		String[] tokens = value.toString().split(
 				AirlineOntimeDataField.getFieldDelimiter());
 
-		Double depDelay = 0.0;
-		if (!tokens[DEP_DELAY].isEmpty()) {
-			depDelay = Double.valueOf(tokens[DEP_DELAY]);
+		if (Double.parseDouble(tokens[CANCELLED]) > 0 || tokens[DEP_DELAY].isEmpty()) {
+			return;
 		}
 
-		OntimeSummaryWritable ontimeSummary = new OntimeSummaryWritable();
-		if (depDelay <= 0) {
-			ontimeSummary.incrementOntime();
-		} else {
-			ontimeSummary.incrementNotOntime();
-		}
+		OntimeSummaryWritable ontimeSummary = new OntimeSummaryWritable(
+				Double.valueOf(tokens[DEP_DELAY]));
 
 		context.write(new OriginCarrierGroupKey(tokens[ORIGIN],
 				tokens[UNIQUE_CARRIER]), ontimeSummary);

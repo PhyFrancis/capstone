@@ -10,19 +10,28 @@ import com.capstone.maven.common.AirlineOntimeDataField;
 
 public class OntimeCountingMapper extends
 		Mapper<LongWritable, Text, Text, OntimeSummaryWritable> {
-	private static final int UNIQUE_CARRIER = AirlineOntimeDataField.UNIQUE_CARRIER.getFieldIndexInCleanedFile();
-	private static final int ARR_DELAY = AirlineOntimeDataField.ARR_DELAY.getFieldIndexInCleanedFile();
-	
+	private static final int UNIQUE_CARRIER = AirlineOntimeDataField.UNIQUE_CARRIER
+			.getFieldIndexInCleanedFile();
+	private static final int ARR_DELAY = AirlineOntimeDataField.ARR_DELAY
+			.getFieldIndexInCleanedFile();
+	private static final int CANCELLED = AirlineOntimeDataField.CANCELLED
+			.getFieldIndexInCleanedFile();
+	private static final int DIVERTED = AirlineOntimeDataField.DIVERTED
+			.getFieldIndexInCleanedFile();
+
 	public void map(LongWritable key, Text value, Context context)
 			throws IOException, InterruptedException {
-		String[] tokens = value.toString().split(AirlineOntimeDataField.getFieldDelimiter());
+		String[] tokens = value.toString().split(
+				AirlineOntimeDataField.getFieldDelimiter());
 
-		String uniqueCarrier = tokens[UNIQUE_CARRIER];
-		double arrDelay  = 0.0;
-		if (!tokens[ARR_DELAY].isEmpty()) {
-			arrDelay = Double.parseDouble(tokens[ARR_DELAY]);
+		if (Double.parseDouble(tokens[CANCELLED]) > 0
+				|| Double.parseDouble(tokens[DIVERTED]) > 0
+				|| tokens[ARR_DELAY].isEmpty()) {
+			return;
 		}
 
-		context.write(new Text(uniqueCarrier), new OntimeSummaryWritable(arrDelay));
+		context.write(
+				new Text(tokens[UNIQUE_CARRIER]),
+				new OntimeSummaryWritable(Double.parseDouble(tokens[ARR_DELAY])));
 	}
 }

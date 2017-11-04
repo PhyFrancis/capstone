@@ -17,6 +17,10 @@ public class ArrivalDelaySummaryMapper
 			.getFieldIndexInCleanedFile();
 	private static final int ARR_DELAY = AirlineOntimeDataField.ARR_DELAY
 			.getFieldIndexInCleanedFile();
+	private static final int CANCELLED = AirlineOntimeDataField.CANCELLED
+			.getFieldIndexInCleanedFile();
+	private static final int DIVERTED = AirlineOntimeDataField.DIVERTED
+			.getFieldIndexInCleanedFile();
 
 	@Override
 	public void map(LongWritable key, Text value, Context context)
@@ -24,17 +28,17 @@ public class ArrivalDelaySummaryMapper
 		String[] tokens = value.toString().split(
 				AirlineOntimeDataField.getFieldDelimiter());
 
+		if (Double.parseDouble(tokens[CANCELLED]) > 0
+				|| Double.parseDouble(tokens[DIVERTED]) > 0) {
+			return;
+		}
+
 		Double arrDelay = 0.0;
 		if (!tokens[ARR_DELAY].isEmpty()) {
 			arrDelay = Double.valueOf(tokens[ARR_DELAY]);
 		}
-
-		ArrivalDelaySummaryWritable ontimeSummary = new ArrivalDelaySummaryWritable();
-		if (arrDelay <= 0) {
-			ontimeSummary.addOneData(0.0);
-		} else {
-			ontimeSummary.addOneData(arrDelay);
-		}
+		ArrivalDelaySummaryWritable ontimeSummary = new ArrivalDelaySummaryWritable(
+				arrDelay);
 
 		context.write(new OriginDestinationGroupKey(tokens[ORIGIN],
 				tokens[DESTINATION]), ontimeSummary);
