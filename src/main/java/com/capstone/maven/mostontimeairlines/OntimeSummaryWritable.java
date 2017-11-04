@@ -4,51 +4,51 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
+import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.WritableComparable;
 
-public class OntimeSummaryWritable implements WritableComparable<OntimeSummaryWritable> {
-	private IntWritable ontime_count;
-	private IntWritable total_count;
+public class OntimeSummaryWritable implements
+		WritableComparable<OntimeSummaryWritable> {
+	private IntWritable count;
+	private DoubleWritable totalDelay;
+
+	private Double getAverageDelay() {
+		return this.totalDelay.get() / this.count.get();
+	}
 
 	public OntimeSummaryWritable() {
-		ontime_count = new IntWritable(0);
-		total_count = new IntWritable(0);
+		count = new IntWritable(0);
+		totalDelay = new DoubleWritable(0.0);
 	}
-
-	public void incrementOntime() {
-		ontime_count.set(ontime_count.get() + 1);
-		total_count.set(total_count.get() + 1);
-	}
-
-	public void incrementNotOntime() {
-		total_count.set(total_count.get() + 1);
-	}
-
-	public Double getOntimeRate() {
-		return (double) this.ontime_count.get() / this.total_count.get();
+	
+	public OntimeSummaryWritable(double delay) {
+		count = new IntWritable(1);
+		totalDelay = new DoubleWritable(delay);
 	}
 
 	public void readFields(DataInput in) throws IOException {
-		ontime_count.readFields(in);
-		total_count.readFields(in);
+		count.readFields(in);
+		totalDelay.readFields(in);
 	}
 
 	public void write(DataOutput out) throws IOException {
-		ontime_count.write(out);
-		total_count.write(out);
+		count.write(out);
+		totalDelay.write(out);
 	}
-
+	
+	public void combine(OntimeSummaryWritable o) {
+		this.count.set(this.count.get() + o.count.get());
+		this.totalDelay.set(this.totalDelay.get() + o.totalDelay.get());
+	}
+	
 	@Override
 	public String toString() {
-		return String.format("ontime rate: %d / %d = %f ", ontime_count.get(),
-				total_count.get(),
-				(double) ontime_count.get() / total_count.get());
+		return String.format("Average Delay: %.6f / %d = %.6f", totalDelay.get(),
+				count.get(), getAverageDelay());
 	}
 
 	public int compareTo(OntimeSummaryWritable o) {
-		Double ontime_rate = (double)ontime_count.get() / total_count.get();
-		Double ontime_rate_that = (double)o.ontime_count.get() / o.total_count.get();
-		return ontime_rate_that.compareTo(ontime_rate);
+		return getAverageDelay().compareTo(o.getAverageDelay());
 	}
 }

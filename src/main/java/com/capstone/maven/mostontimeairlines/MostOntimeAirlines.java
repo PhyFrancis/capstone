@@ -8,7 +8,6 @@ import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 import org.apache.hadoop.conf.Configuration;
 
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.BooleanWritable;
 import org.apache.hadoop.io.Text;
 
 /**
@@ -25,7 +24,8 @@ public class MostOntimeAirlines {
 		FileInputFormat.setInputPaths(summarizeJob, new Path(args[0]));
 		// Map & Reduce
 		summarizeJob.setMapperClass(OntimeCountingMapper.class);
-		summarizeJob.setMapOutputValueClass(BooleanWritable.class);
+		summarizeJob.setMapOutputValueClass(OntimeSummaryWritable.class);
+		summarizeJob.setCombinerClass(OntimeSummaryReducer.class);
 		summarizeJob.setReducerClass(OntimeSummaryReducer.class);
 		// Output
 		summarizeJob.setOutputKeyClass(Text.class);
