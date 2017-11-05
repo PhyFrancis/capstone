@@ -39,12 +39,10 @@ public class ConnectingLegsReducer extends
 		final private DateTime date;
 
 		public FlightInfo(Text text) {
-			String[] tokens = text.toString().split(
-					AirlineOntimeDataField.getFieldDelimiter());
-			this.uniqueFlightNum = (tokens[CARRIER] + tokens[FLIGHT_NUM])
-					.replace("\"", "");
-			this.origin = tokens[ORIGIN].replace("\"", "");
-			this.dest = tokens[DEST].replace("\"", "");
+			String[] tokens = text.toString().split(AirlineOntimeDataField.getFieldDelimiter());
+			this.uniqueFlightNum = (tokens[CARRIER] + tokens[FLIGHT_NUM]).replace("\"", "");
+			this.origin = tokens[ORIGIN];
+			this.dest = tokens[DEST];
 			this.arrDelay = Double.parseDouble(tokens[ARR_DELAY]);
 			this.date = fmt.parseDateTime(tokens[FLIGHT_DATE]);
 		}
@@ -53,24 +51,25 @@ public class ConnectingLegsReducer extends
 	@Override
 	public void reduce(LegKey key, Iterable<Text> values, Context context)
 			throws IOException, InterruptedException {
-		List<FlightInfo> XYLegs = new ArrayList<FlightInfo>();
-		List<FlightInfo> YZLegs = new ArrayList<FlightInfo>();
+		List<FlightInfo> xyLegs = new ArrayList<FlightInfo>();
+		List<FlightInfo> yzLegs = new ArrayList<FlightInfo>();
 		for (Text val : values) {
 			FlightInfo info = new FlightInfo(val);
 			if (info.origin.equals(key.getY())) {
-				YZLegs.add(info);
+				yzLegs.add(info);
 			} else if (info.dest.equals(key.getY())) {
-				XYLegs.add(info);
+				xyLegs.add(info);
 			}
 		}
-		if (XYLegs.isEmpty() || YZLegs.isEmpty()) {
+		if (xyLegs.isEmpty() || yzLegs.isEmpty()) {
 			return;
 		}
-		for (FlightInfo xyLeg : XYLegs) {
-			for (FlightInfo yzLeg : YZLegs) {
+		for (FlightInfo xyLeg : xyLegs) {
+			for (FlightInfo yzLeg : yzLegs) {
 				context.write(
-						new Text(String.format("%s %s %s %s %s %s %s %.3f",
-								xyLeg.origin, xyLeg.dest, yzLeg.origin,
+						new Text(String.format(
+								"%s %s %s %s %s %s %s %.3f",
+								xyLeg.origin, xyLeg.dest, yzLeg.dest,
 								xyLeg.date, xyLeg.uniqueFlightNum, yzLeg.date,
 								yzLeg.uniqueFlightNum, xyLeg.arrDelay
 										+ yzLeg.arrDelay)), NullWritable.get());
