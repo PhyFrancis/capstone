@@ -28,10 +28,8 @@ public class ConnectingLegsReducer extends Reducer<LegKey, Text, Text, Text> {
 	private static final int ARR_DELAY = AirlineOntimeDataField.ARR_DELAY
 			.getFieldIndexInCleanedFile();
 
-	private static final DateTimeFormatter INPUT_FMT = DateTimeFormat
+	private static final DateTimeFormatter fmt = DateTimeFormat
 			.forPattern("yyyy-MM-dd");
-	private static final DateTimeFormatter OUTPUT_FMT = DateTimeFormat
-			.forPattern("dd/MM/yyyy");
 
 	public class FlightInfo {
 		final private String uniqueFlightNum;
@@ -50,13 +48,13 @@ public class ConnectingLegsReducer extends Reducer<LegKey, Text, Text, Text> {
 			this.dest = tokens[DEST];
 			this.depTime = tokens[CRS_DEP_TIME];
 			this.arrDelay = Double.parseDouble(tokens[ARR_DELAY]);
-			this.date = INPUT_FMT.parseDateTime(tokens[FLIGHT_DATE]);
+			this.date = fmt.parseDateTime(tokens[FLIGHT_DATE]);
 		}
 
 		public String toString() {
 			return String.format("(%s %s %s %s %s %.3f)",
 					origin.replace("\"", ""), dest.replace("\"", ""),
-					uniqueFlightNum, depTime, date.toString(OUTPUT_FMT),
+					uniqueFlightNum, depTime, date.toString(fmt),
 					arrDelay);
 		}
 	}
@@ -84,7 +82,7 @@ public class ConnectingLegsReducer extends Reducer<LegKey, Text, Text, Text> {
 								xyLeg.origin.replace("\"", ""),
 								xyLeg.dest.replace("\"", ""),
 								yzLeg.dest.replace("\"", ""),
-								xyLeg.date.toString(OUTPUT_FMT), xyLeg.arrDelay
+								xyLeg.date.toString(fmt), xyLeg.arrDelay
 										+ yzLeg.arrDelay)),
 						new Text(String.format("%s %s", xyLeg.toString(),
 								yzLeg.toString())));
