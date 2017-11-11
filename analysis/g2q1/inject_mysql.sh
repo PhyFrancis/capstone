@@ -4,26 +4,30 @@
 ### $ aws configure [one time setup for credential]
 ### $ aws s3 sync s3://daiqian.capstone/group2_question1 .
 
-table_name="departure_delay_by_origin_by_airline"
-data_file="/home/daiqianzhang/workspace/analysis/g2q1/data/part-r-00000"
+table_name=departure_delay_by_origin_by_airline
+data_src=$(pwd)/data
 
 mysql -uroot -proot << EOF
-
+CREATE DATABASE IF NOT EXISTS capstone;
 USE capstone;
-
 DROP TABLE IF EXISTS $table_name;
 CREATE TABLE $table_name (
   origin CHAR(20),
   airline CHAR(20),
   delay DECIMAL(10,6)
 );
+EOF
 
-LOAD DATA INFILE "$data_file"
-INTO TABLE $table_name 
+for f in $(ls $data_src) ; do
+  cat $data_src/$f | sed 's/\t/ /g' | cut -d' ' -f 1-3 > tmp
+
+mysql -uroot -proot << EOF
+USE capstone;
+LOAD DATA LOCAL INFILE "$(pwd)/tmp"
+INTO TABLE $table_name
 COLUMNS TERMINATED BY ' '
 OPTIONALLY ENCLOSED BY '"'
 LINES TERMINATED BY '\n';
-
-SELECT * from $table_name;
-
 EOF
+
+done
