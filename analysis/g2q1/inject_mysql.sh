@@ -19,7 +19,7 @@ CREATE TABLE $table_name (
 EOF
 
 for f in $(ls $data_src) ; do
-  cat $data_src/$f | sed 's/\t/ /g' | cut -d' ' -f 1-3 > tmp
+  cat $data_src/$f | awk 'BEGIN {FPAT="([^ \t]+)|(\"[^\"]+\")"} {print $1,$2,$3}' > tmp
 
 mysql -uroot -proot << EOF
 USE capstone;
