@@ -4,7 +4,7 @@
 ### $ aws configure [one time setup for credential]
 ### $ aws s3 sync s3://daiqian.capstone/group2_question1 .
 
-table_name=departure_delay_by_origin_by_airline
+table_name=arrival_delay_by_origin_by_dest
 data_src=$(pwd)/data
 
 mysql -uroot -proot << EOF
@@ -13,13 +13,13 @@ USE capstone;
 DROP TABLE IF EXISTS $table_name;
 CREATE TABLE $table_name (
   origin CHAR(20),
-  airline CHAR(20),
+  dest CHAR(20),
   delay DECIMAL(10,6)
 );
 EOF
 
 for f in $(ls $data_src) ; do
-  cat $data_src/$f | awk 'BEGIN {FPAT="([^ \t]+)|(\"[^\"]+\")"} {print $1,$2,$3}' > tmp
+  cat $data_src/$f | awk 'BEGIN {FPAT="([^ \t]+)|(\"[^\"]+\")"} {print $1,$2,$4}' > tmp
 
 mysql -uroot -proot << EOF
 USE capstone;
@@ -31,3 +31,5 @@ LINES TERMINATED BY '\n';
 EOF
 
 done
+
+rm -f tmp

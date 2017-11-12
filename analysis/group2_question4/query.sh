@@ -4,11 +4,10 @@
 ### that script populates the db table.
 
 origin=$1
+dest=$2
 
 mysql -uroot -proot << EOF
 USE capstone;
-select * from departure_delay_by_origin_by_airline
-where origin = "$origin"
-order by delay
-limit 10
+select * from arrival_delay_by_origin_by_dest
+where origin = "$origin" and dest = "$dest"
 EOF
