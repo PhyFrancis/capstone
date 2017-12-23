@@ -1,9 +1,5 @@
 #! /bin/bash
 
-## TODO in MapReduce code:
-## 1. use '|' as delimiter, and please remove any spaces around '|'.
-## 2. get rid of quote in A-B-C key field.
-
 ## Caveat: (The following are true unless allow filtering, which sucks)
 ## 1. Cassandra only allows query on primary key
 ## 2. When using compound primary key, the column can only be restricted if
