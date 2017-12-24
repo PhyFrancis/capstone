@@ -18,7 +18,7 @@ CREATE TABLE connecting_flights (
   delay double,
   first_leg text,
   second_leg text,
-  PRIMARY KEY ((date), airport_a, airport_b, airport_c)
+  PRIMARY KEY ((date), airport_a, airport_b, airport_c, delay)
 );
 EOF
 
