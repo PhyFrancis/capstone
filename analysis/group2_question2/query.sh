@@ -1,7 +1,7 @@
 #! /bin/bash
 
-### Make sure you already run 'inject_mysql.sh' beforehand,
-### that script populates the db table.
+### Make sure you already run 'inject_mysql.sh', that script populates the db
+### table.
 
 origin=$1
 
