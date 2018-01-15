@@ -38,5 +38,8 @@ public class SSMostPopularAirports {
 	        private static final long serialVersionUID = 2003L;
 	      }
 	    );
+	    
+	    counts.saveAsTextFile("hdfs://flightcount");
+	    sc.close();
 	}
 }
