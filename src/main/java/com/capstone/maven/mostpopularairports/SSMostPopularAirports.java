@@ -15,9 +15,11 @@ public class SSMostPopularAirports {
 		JavaSparkContext sc = new JavaSparkContext(new SparkConf().setAppName("Flight Count"));
 
 		JavaRDD<String> tokenized = sc.textFile(args[0]).flatMap(new FlatMapFunction<String, String>() {
+			@SuppressWarnings("unchecked")
 			public Iterator<String> call(String s) {
 				return (Iterator<String>) Arrays.asList(s.split(" "));
 			}
+			private static final long serialVersionUID = 2001L;
 		});
 		
 		// count the occurrence of each word
@@ -26,12 +28,14 @@ public class SSMostPopularAirports {
 	        public Tuple2<String, Integer> call(String s) {
 	          return new Tuple2<String, Integer>(s, 1);
 	        }
+	        private static final long serialVersionUID = 2002L;
 	      }
 	    ).reduceByKey(
 	      new Function2<Integer, Integer, Integer>() {
 	        public Integer call(Integer i1, Integer i2) {
 	          return i1 + i2;
 	        }
+	        private static final long serialVersionUID = 2003L;
 	      }
 	    );
 	}
