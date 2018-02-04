@@ -29,12 +29,16 @@ object G1Q1 {
     val spark = SparkSession.builder
         .appName("G1Q1")
         .getOrCreate()
-    val rowRdd = spark.readStream
+    val rowDf = spark.readStream
         .option("sep", "|")
         .schema(schema)
         .csv(inputPath)
 
-    val query = rowRdd.???
+    import spark.implicits._
+    val query = rowDf
+        .flatMap(r => Array(r.getString(3), r.getString(4)))
+        .groupBy("value")
+        .count()
         .writeStream
         .outputMode("complete")
         .format("console")
