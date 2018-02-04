@@ -1,30 +1,25 @@
+package capstone
+
 import org.apache.spark._
 import org.apache.spark.SparkContext._
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.Row
-import org.apache.spark.sql.types._
 import org.apache.spark.streaming._
 
-// final val scheme = StructType(Array(
-//   StructField("YEAR", NumericType),
-//   StructField("MONTH", NumericType),
-//   StructField("DAY_OF_MONTH", NumericType),
-//   StructField("DAY_OF_WEEK", NumericType),
-//   StructField("FLIGHT_DATE", DateType),
-//   StructField("UNIQUE_CARRIER", StringType),
-//   StructField("AIRLINE_ID", NumericType),
-//   StructField("CARRIER", StringType),
-//   StructField("FLIGHT_NUM", StringType),
-//   StructField("ORIGIN", StringType),
-//   StructField("DEST", StringType),
-//   StructField("CRS_DEP_TIME", StringType),
-//   StructField("DEP_DELAY", NumericType),
-//   StructField("CRS_ARR_TIME", StringType),
-//   StructField("ARR_DELAY", NumericType),
-//   StructField("CANCELLED", NumericType),
-//   StructField("DIVERTED", NumericType),
-//   StructField("FLIGHTS", NumericType)
-// ));
+import capstone.Common.schema
+
+// ========== CLeaned data schema ==========
+// Delimiter is "|"
+//    StructField("FLIGHT_DATE", DateType),
+//    StructField("UNIQUE_CARRIER", StringType),
+//    StructField("FLIGHT_NUM", StringType),
+//    StructField("ORIGIN", StringType),
+//    StructField("DEST", StringType),
+//    StructField("CRS_DEP_TIME", StringType),
+//    StructField("DEP_DELAY", NumericType),
+//    StructField("CRS_ARR_TIME", StringType),
+//    StructField("ARR_DELAY", NumericType),
+//    StructField("CANCELLED", NumericType),
+//    StructField("DIVERTED", NumericType),
 
 object G1Q1 {
   def main(args: Array[String]) {
@@ -34,13 +29,14 @@ object G1Q1 {
     val spark = SparkSession.builder
         .appName("G1Q1")
         .getOrCreate()
+    val rowRdd = spark.readStream
+        .option("sep", "|")
+        .schema(schema)
+        .csv(inputPath)
 
-    val counts = spark.readStream.load() // This won't work, just make it compile
-	// .schema(schema)
-	// .option(blabla)
-	// .csv(inputPath)
-
-    val query = counts.writeStream.outputMode("complete")
+    val query = rowRdd.???
+        .writeStream
+        .outputMode("complete")
         .format("console")
         .start()
     query.awaitTermination()
