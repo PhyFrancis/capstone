@@ -40,7 +40,7 @@ object G1Q1 {
         .groupBy("value")
         .count()
         .writeStream
-        .outputMode("complete")
+        .outputMode("complete") // TODO write to cassandra.
         .format("console")
         .start()
     query.awaitTermination()
