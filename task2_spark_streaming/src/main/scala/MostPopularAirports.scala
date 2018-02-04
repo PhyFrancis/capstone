@@ -40,9 +40,12 @@ object G1Q1 {
         .groupBy("value")
         .count()
         .writeStream
-        .outputMode("complete") // TODO write to cassandra.
+        .outputMode("complete")
         .format("console")
         .start()
     query.awaitTermination()
+
+    // TODO write to cassandra.
+    // ref: https://github.com/polomarcus/Spark-Structured-Streaming-Examples/blob/master/src/main/scala/cassandra/foreachSink/CassandraSinkForeach.scala
   }
 }
