@@ -23,8 +23,7 @@ import org.apache.spark.SparkConf
 //17  StructField("FLIGHTS", NumericType)
 
 // ========== CLeaned data schema ==========
-// TODO fill in here
-// Delimiter is ":::"
+// Delimiter is "|"
 //    StructField("FLIGHT_DATE", DateType),
 //    StructField("UNIQUE_CARRIER", StringType),
 //    StructField("FLIGHT_NUM", StringType),
