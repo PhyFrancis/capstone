@@ -1,4 +1,4 @@
-name := "G1Q1"
+name := "CapstoneTask2"
 
 version := "1.0"
 
