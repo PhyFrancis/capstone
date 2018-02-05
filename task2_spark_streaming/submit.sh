@@ -1,11 +1,15 @@
 #! /bin/bash
 
+# Prerequisite:
+#   1. hadoop cluster is up, namenode is at hdfs://ip-172-31-5-186:9000
+#   2. spark cluster is up.
+
 spark_home=/home/ubuntu/spark-2.2.1-bin-hadoop2.7
 jar_local=/home/ubuntu/spark-2.2.1-bin-hadoop2.7/work/capstone/task2_spark_streaming/target/scala-2.11/capstonetask2_2.11-1.0.jar
 jar_hdfs=hdfs://ip-172-31-5-186:9000/jars/capstonetask2_2.11-1.0.jar
 
-data_clean=false
 g1q1=true
+data_clean=false
 
 if [ "${g1q1}" = true ] ; then
   ${spark_home}/bin/spark-submit \
