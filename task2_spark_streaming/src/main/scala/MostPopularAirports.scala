@@ -48,7 +48,7 @@ object G1Q1 {
         .writeStream
         // .outputMode("append")
         // .format("console")
-        .foreach(new CassandraForeachSink())
+        .foreach(new CassandraForeachSink()) // TODO should use 'update' mode instead of 'append'
         .start()
     query.awaitTermination()
   }
