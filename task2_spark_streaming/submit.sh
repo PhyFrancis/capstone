@@ -2,7 +2,8 @@
 
 # Prerequisite:
 #   1. hadoop cluster is up, namenode is at hdfs://ip-172-31-5-186:9000
-#   2. spark cluster is up.
+#   2. spark cluster is up, master url is at spark://ip-172-31-5-186.ec2.internal:6066
+#   3. cassandra cluster is up.
 
 spark_home=/home/ubuntu/spark-2.2.1-bin-hadoop2.7
 jar_local=/home/ubuntu/spark-2.2.1-bin-hadoop2.7/work/capstone/task2_spark_streaming/target/scala-2.11/CapstoneTask2-assembly-1.0.jar
