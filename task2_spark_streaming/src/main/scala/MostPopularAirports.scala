@@ -2,18 +2,21 @@ package capstone
 
 import com.datastax.spark.connector.cql.CassandraConnector
 import com.datastax.spark.connector.streaming._
+import kafka.serializer.StringDecoder
 import org.apache.spark.SparkConf
 import org.apache.spark.streaming.{StreamingContext,Seconds,StateSpec,State}
-
-import cassandra.CassandraDriver
+import org.apache.spark.streaming.kafka._
 
 object G1Q1 {
   def main(args: Array[String]) {
-    val inputPath = args(0)
-
     val sparkConf = new SparkConf().setAppName("most popular airports")
     val ssc = new StreamingContext(sparkConf, Seconds(10))
-    ssc.checkpoint("./.tmp/")
+    ssc.checkpoint("hdfs://ip-172-31-5-186:9000/ubuntu_tmp")
+
+    val topicsSet = Set("cleaned_data")
+    val kafkaParams = Map[String, String]("metadata.broker.list" -> "172.31.5.186:9092")
+    val messages = KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder](
+      ssc, kafkaParams, topicsSet)
 
     initTable(sparkConf)
     val mappingFunc = (word: String, one: Option[Int], state: State[Int]) => {
@@ -23,9 +26,8 @@ object G1Q1 {
       output
     }
 
-    val query = ssc
-      .textFileStream(inputPath)
-      .map(_.split('|'))
+    val query = messages
+      .map(m => m._2.split('|'))
       .flatMap(fields => Array((fields(3),1), (fields(4),1)))
       .mapWithState(StateSpec.function(mappingFunc))
       .saveToCassandra("capstone", "airport_count")
