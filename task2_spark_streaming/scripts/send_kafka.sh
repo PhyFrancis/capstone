@@ -5,6 +5,7 @@ start_kafka=false
 
 topic_name=cleaned_data
 kafka_home=/home/ubuntu/kafka_2.11-1.0.0
+hdfs_data_path=/test_data/cleaned_data
 
 if [ ${stop_kafka} = true ] ; then
   echo Stoping kafka broker...
@@ -28,7 +29,7 @@ if [ ${start_kafka} = true ] ; then
     --topic ${topic_name}
 fi
 
-for filename in $(hdfs dfs -ls /cleaned_data | sed '1d;s/  */ /g' | cut -d\  -f8) ; do
+for filename in $(hdfs dfs -ls ${hdfs_data_path} | sed '1d;s/  */ /g' | cut -d\  -f8) ; do
   echo fanning out ${filename}
   hdfs dfs -cat ${filename} \
     | ${kafka_home}/bin/kafka-console-producer.sh \
