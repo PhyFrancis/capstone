@@ -19,17 +19,15 @@ object G1Q1 {
       ssc, kafkaParams, topicsSet)
 
     initTable(sparkConf)
-    val mappingFunc = (word: String, one: Option[Int], state: State[Int]) => {
-      val sum = one.getOrElse(0) + state.getOption.getOrElse(0)
-      val output = (word, sum)
-      state.update(sum)
-      output
+    val updateFunction = (counts: Seq[Int], state: Option[Int]) => {
+      Some(counts.sum + state.getOrElse(0))
     }
 
     val query = messages
       .map(m => m._2.split('|'))
+      .filter(fields => fields(3).length > 0 && fields(4).length > 0)
       .flatMap(fields => Array((fields(3),1), (fields(4),1)))
-      .mapWithState(StateSpec.function(mappingFunc))
+      .updateStateByKey(updateFunction)
       .saveToCassandra("capstone", "airport_count")
 
     ssc.start()

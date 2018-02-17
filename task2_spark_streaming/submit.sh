@@ -10,8 +10,8 @@ jar_local=/home/ubuntu/spark-2.2.1-bin-hadoop2.7/work/capstone/task2_spark_strea
 jar_hdfs=hdfs://ip-172-31-5-186:9000/jars/CapstoneTask2-assembly-1.0.jar
 cassandra_flag="--packages datastax:spark-cassandra-connector:2.0.1-s_2.11"
 
-g1q2=true
-g1q1=false
+g1q2=false
+g1q1=true
 data_clean=false
 
 if [ "${g1q2}" = true ] ; then
