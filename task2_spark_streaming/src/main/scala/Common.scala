@@ -17,3 +17,9 @@ object Common {
     /*10*/ StructField("DIVERTED", FloatType)
   ))
 }
+
+case class OntimeSummary(count: Int, total_delay: Double)
+
+case class AirportCarrier(airport: String, carrier: String)
+
+case class AirportAirport(origin: String, dest: String)
