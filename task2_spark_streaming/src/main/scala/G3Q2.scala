@@ -12,18 +12,17 @@ import org.apache.spark.streaming.kafka._
 
 import java.net.URI
 
-// For each airport X, rank the top-10 carriers in decreasing order of on-time
-// departure performance from X.
-object G2Q1 {
+// Find connecting flights for given route.
+object G3Q2 {
   def main(args: Array[String]) {
-    val sparkConf = new SparkConf().setAppName("G2Q1")
+    val sparkConf = new SparkConf().setAppName("G3Q2")
     val sc = new SparkContext(sparkConf)
     val ssc = new StreamingContext(sc, Seconds(10))
-    ssc.checkpoint("hdfs://ip-172-31-5-186:9000/G2Q1_tmp")
+    ssc.checkpoint("hdfs://ip-172-31-5-186:9000/G3Q2_tmp")
     
     val fs = FileSystem.get(new URI("hdfs://ip-172-31-5-186:9000"), sc.hadoopConfiguration);
-    if(fs.exists(new Path("/G2Q1_tmp"))) {
-      fs.delete(new Path("/G2Q1_tmp"),true)
+    if(fs.exists(new Path("/G3Q2_tmp"))) {
+      fs.delete(new Path("/G3Q2_tmp"),true)
     }
 
     val topicsSet = Set("cleaned_data")
@@ -33,18 +32,17 @@ object G2Q1 {
 
     initTable(sparkConf)
     val updateFunction = 
-      (delays: Seq[Double], summary:Option[OntimeSummary]) => {
-        val state = summary.getOrElse(OntimeSummary(0, 0.0))
-        Some(OntimeSummary(state.count + delays.size, state.total_delay + delays.sum))
+      (delays: Seq[Double], delay:Option[Double]) => {
+        Some((delays :+ delay.getOrElse(1000.0)).min)
       }
 
     val query = messages
       .map(m => m._2.split('|'))
-      .filter(fields => fields(6).length > 0 && fields(9).toDouble == 0.0)
-      .map(fields => (AirportCarrier(fields(3), fields(1)), fields(6).toDouble))
-      .updateStateByKey[OntimeSummary](updateFunction)
-      .map(s => (s._1.airport, s._1.carrier, s._2.total_delay / s._2.count))
-      .saveToCassandra("capstone", "airport_carrier_ontime_departure")
+      .filter(fields => fields(0).startsWith("2008") && fields(8).length > 0 && fields(9).toDouble == 0.0 && fields(10).toDouble == 0.0)
+      .map(fields => (AirportAirportDate(fields(3), fields(4), fields(0)), fields(8).toDouble))
+      .updateStateByKey[Double](updateFunction)
+      .map(s => (s._1.origin, s._1.dest, s._1.date, s._2))
+      .saveToCassandra("capstone", "origin_dest_date")
 
     ssc.start()
     ssc.awaitTermination()
@@ -57,10 +55,10 @@ object G2Q1 {
         WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1}
       """)
       session.execute(s"""
-        DROP TABLE IF EXISTS capstone.airport_carrier_ontime_departure
+        DROP TABLE IF EXISTS capstone.origin_dest_date
       """)
       session.execute(s"""
-        CREATE TABLE capstone.airport_carrier_ontime_departure (airport TEXT, carrier TEXT, departure_delay DOUBLE, PRIMARY KEY (airport, carrier))
+        CREATE TABLE capstone.origin_dest_date (origin TEXT, dest TEXT, date DATE, arrival_delay DOUBLE, PRIMARY KEY (origin, dest, date))
       """)
     }
   }

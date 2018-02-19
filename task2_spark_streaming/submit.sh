@@ -10,12 +10,20 @@ jar_local=/home/ubuntu/spark-2.2.1-bin-hadoop2.7/work/capstone/task2_spark_strea
 jar_hdfs=hdfs://ip-172-31-5-186:9000/jars/CapstoneTask2-assembly-1.0.jar
 cassandra_flag="--packages datastax:spark-cassandra-connector:2.0.1-s_2.11"
 
-g2q4=true
+g3q2=true # verified
+g2q4=false # verified
 g2q2=false # verified
 g2q1=false # verified
 g1q2=false # verified
 g1q1=false # verified
 data_clean=false
+
+if [ "${g3q2}" = true ] ; then
+  ${spark_home}/bin/spark-submit \
+    --class capstone.G3Q2 \
+    --master spark://ip-172-31-5-186.ec2.internal:6066 --deploy-mode cluster \
+    ${jar_hdfs}
+fi
 
 if [ "${g2q4}" = true ] ; then
   ${spark_home}/bin/spark-submit \

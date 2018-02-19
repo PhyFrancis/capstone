@@ -6,7 +6,7 @@ fanout_data=true
 
 topic_name=cleaned_data
 kafka_home=/home/ubuntu/kafka_2.11-1.0.0
-hdfs_data_path=/cleaned_data
+hdfs_data_path=/test_data/cleaned_data
 
 if [ ${stop_kafka} = true ] ; then
   echo Deleting kafka topic $topic_name

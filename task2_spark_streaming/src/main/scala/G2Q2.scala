@@ -16,7 +16,7 @@ import java.net.URI
 // departure performance from X
 object G2Q2 {
   def main(args: Array[String]) {
-    val sparkConf = new SparkConf().setAppName("most ontime airlines")
+    val sparkConf = new SparkConf().setAppName("G2Q2")
     val sc = new SparkContext(sparkConf)
     val ssc = new StreamingContext(sc, Seconds(10))
     ssc.checkpoint("hdfs://ip-172-31-5-186:9000/G2Q2_tmp")

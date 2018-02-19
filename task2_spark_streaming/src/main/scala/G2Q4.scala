@@ -16,7 +16,7 @@ import java.net.URI
 // (in minutes) for a flight from X to Y.
 object G2Q4 {
   def main(args: Array[String]) {
-    val sparkConf = new SparkConf().setAppName("most ontime airlines")
+    val sparkConf = new SparkConf().setAppName("G2Q4")
     val sc = new SparkContext(sparkConf)
     val ssc = new StreamingContext(sc, Seconds(10))
     ssc.checkpoint("hdfs://ip-172-31-5-186:9000/G2Q4_tmp")

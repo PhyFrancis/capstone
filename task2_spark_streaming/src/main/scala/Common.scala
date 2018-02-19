@@ -23,3 +23,5 @@ case class OntimeSummary(count: Int, total_delay: Double)
 case class AirportCarrier(airport: String, carrier: String)
 
 case class AirportAirport(origin: String, dest: String)
+
+case class AirportAirportDate(origin: String, dest: String, date: String)
